@@ -1,10 +1,14 @@
 package com.capellasolutions.recoverynetwork2;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
@@ -15,6 +19,10 @@ import android.webkit.WebViewClient;
 
 import com.google.android.exoplayer.demo.player.DemoPlayer;
 import com.google.android.exoplayer.demo.player.RtpUdpRendererBuilder;
+import com.google.code.microlog4android.Logger;
+import com.google.code.microlog4android.LoggerFactory;
+import com.google.code.microlog4android.appender.FileAppender;
+import com.google.code.microlog4android.config.PropertyConfigurator;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,6 +33,9 @@ import java.util.List;
  * status bar and navigation/system bar) with user interaction.
  */
 public class MainActivity extends Activity  implements SurfaceHolder.Callback {
+
+    protected static final Logger logger = LoggerFactory.getLogger();
+    protected FileAppender appender = new FileAppender();
 
     private SurfaceView mVideoSurfaceView;
     private WebView mWebView;
@@ -37,6 +48,7 @@ public class MainActivity extends Activity  implements SurfaceHolder.Callback {
     private int currentChannel = 0;
 
 
+
     @Override
     protected  void onDestroy(){
         super.onDestroy();
@@ -45,6 +57,13 @@ public class MainActivity extends Activity  implements SurfaceHolder.Callback {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        PropertyConfigurator.getConfigurator(this).configure();
+
+       // appender.setFileName(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/log.txt");
+       // appender.setAppend(true);
+       // logger.addAppender(appender);
+       // logger.info("testing");
 
         setContentView(R.layout.activity_main);
 
@@ -95,7 +114,7 @@ public class MainActivity extends Activity  implements SurfaceHolder.Callback {
     }
 
     private List<String> getChannelList(){
-        List<String> channelList = new ArrayList<String>();
+        List<String> channelList = new ArrayList<>();
 
         channelList.add("rtp://239.100.100.100:5000");
         channelList.add("rtp://239.100.100.100:5001");
@@ -225,7 +244,7 @@ public class MainActivity extends Activity  implements SurfaceHolder.Callback {
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.getSettings().setLoadWithOverviewMode(true);
         mWebView.getSettings().setUseWideViewPort(true);
-        mWebView.loadUrl("http://96.93.90.249/direcweb/MainMenu.aspx");
+        mWebView.loadUrl("http://192.168.0.225/direcweb/MainMenu.aspx");
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
